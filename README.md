@@ -1,3 +1,3 @@
 # getmapkeys
 golang get map keys
-benchmark of `append after init` or `append not init`
+benchmark of `append with init []` or `append without init []`
