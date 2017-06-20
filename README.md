@@ -1,2 +1,3 @@
-# benchmark_slice_append
-golang slice append benchmark
+# getmapkeys
+golang get map keys
+benchmark of `for` or `reflect`
