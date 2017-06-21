@@ -2,12 +2,12 @@ package goroutine
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 )
 
-var data chan bool
-var finishCh chan bool
+var data sync.WaitGroup
 
 func f(cb func()) {
 	// mem op
@@ -27,10 +27,7 @@ func f(cb func()) {
 }
 
 func callback() {
-	<-data
-	if len(data) == 0 {
-		finishCh <- true
-	}
+	data.Done()
 }
 
 func run(way, chanSize, N int) {
@@ -38,17 +35,13 @@ func run(way, chanSize, N int) {
 	if way == GoWayChan {
 		name = "BenchmarkGoChan"
 	}
-	data = make(chan bool, N)
-	finishCh = make(chan bool, 1)
+	data.Add(N)
 	g := New(way, chanSize)
-	for n := 0; n < N; n++ {
-		data <- true
-	}
 	tm := time.Now()
 	for n := 0; n < N; n++ {
 		g.Go(callback, f)
 	}
-	<-finishCh
+	data.Wait()
 	fmt.Println(name, "\t\t", N, "\t\t", time.Since(tm).Nanoseconds()/int64(N), "ns/op")
 }
 
