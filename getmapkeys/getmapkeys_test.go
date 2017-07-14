@@ -1,34 +1,40 @@
 package getmapkeys
 
 import (
+	"math/rand"
+	"strconv"
 	"testing"
 )
 
-var i = map[string]string{
-	"a": "aa",
-	"b": "bb",
-	"c": "cc",
-	"d": "dd",
-	"e": "ee",
-	"f": "ff",
-	"g": "gg",
-	"h": "hh",
-	"i": "ii",
-	"j": "jj",
+var i map[string]string
+var N = 1000
+
+func initInput() {
+	if i == nil {
+		i = make(map[string]string)
+		for a := 0; a <= N; a++ {
+			b := strconv.Itoa(rand.Intn(N))
+			i[b] = b
+		}
+	}
 }
 
 func BenchmarkWithInit(b *testing.B) {
+	initInput()
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		var o []string
-		GetMapKeys(i, GetWayWithInit, o)
+		o := WithInit(i)
+		if len(o) == N {
+		}
 	}
 }
 
 func BenchmarkWithoutInit(b *testing.B) {
+	initInput()
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		var o []string
-		GetMapKeys(i, GetWayWithoutInit, o)
+		o := WithoutInit(i)
+		if len(o) == N {
+		}
 	}
 }
